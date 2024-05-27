@@ -21,11 +21,13 @@ def createslq(idx,pid,name,code):
 def readexcel(file_path):
     data=list()
     #产品分类	A01	ACB	A01A03	CW3	A01A03A01
-    dictD={'A01A03':['ACB',IDcreator()],'A01A03A01':['CW3',IDcreator()]}
+    dictD={}
     df = pd.read_excel(file_path)
     print("读取excel")
     for row in range(0,df.shape[0]):
-        for col in range(0,df.shape[1],3):
+        for col in range(2,5,2):
+            dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
+        for col in range(6,df.shape[1],3):
             if str(df.iloc[row,col])=='nan':
                 break
             else:
