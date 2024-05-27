@@ -48,15 +48,15 @@ def readexcel(file_path):
     print('已生成sql关键词')
     return data       
 
-if __name__ == '__main__':
-    abspath = os.path.dirname(os.path.abspath(__file__))
-    xlxs_path=os.path.join(abspath,'data.xlsx')                
+#读取excel文件，生成同名的sql文件
+def createsql(root,file):
+    xlxs_path=os.path.join(root,file)
     ldata=readexcel(xlxs_path)
-    file_path = os.path.join(abspath, 'ACB.sql')
-    if not os.path.exists(os.path.dirname(file_path)):
-        os.makedirs(os.path.dirname(file_path))
+    sqlfile_path = os.path.join(root, file[0:-5]+'.sql')
+    if not os.path.exists(os.path.dirname(sqlfile_path)):
+        os.makedirs(os.path.dirname(sqlfile_path))
     try:
-        with open(file_path, 'w') as f:
+        with open(sqlfile_path, 'w') as f:
             for i in ldata:
                 f.write('--'+i['name']+'\t'+i['code']+'\n')
                 f.write(createslq(i['idx'],i['pid'],i['name'],i['code'])+'\n')
@@ -65,4 +65,16 @@ if __name__ == '__main__':
         print(f'Error occurred while writing to file: {e}')
     finally:
         f.close()
-    print('finish')
+    print(sqlfile_path+' 写入完成')
+
+if __name__ == '__main__':
+    abspath = os.path.dirname(os.path.abspath(__file__))
+    #遍历data目录下xlsx文件
+    xlxs_path=os.path.join(abspath,'data')
+    for root, dirs, files in os.walk(xlxs_path):
+        for file in files:
+            if file.endswith('.xlsx'):
+                xlxs_path=os.path.join(root,file)
+                print('正在处理文件：'+xlxs_path)
+                createsql(root,file)
+    print('处理完成')
