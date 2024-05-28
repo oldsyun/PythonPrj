@@ -20,10 +20,10 @@ def createslq(idx,pid,name,code):
 
 def readexcel(file_path):
     data=list()
-    #产品分类	A01	 测试平台1764891047616118785
     dictD={}
     df = pd.read_excel(file_path)
     for row in range(0,df.shape[0]):
+        #提取excel 3，4，5，6列，code：4，6，name：3，5
         for col in range(2,5,2):
             dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
         for col in range(6,df.shape[1],3):
@@ -38,8 +38,7 @@ def readexcel(file_path):
         if len(i)>6:
             pid=dic.get(i[0:-3])[1]
         elif len(i)==6:
-            pid='1764891047616118785'
-            #pid='1772098148731260929' #产品分类id 
+            pid='1764891047616118785'#pid='1772098148731260929' 查看在线网页id号，区分测试环境和生产环境  产品分类	A01	 测试平台1764891047616118785
         result={
             'code': i,
             'name':dic[i][0],
