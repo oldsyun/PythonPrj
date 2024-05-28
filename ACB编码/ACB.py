@@ -23,7 +23,6 @@ def readexcel(file_path):
     #产品分类	A01	 测试平台1764891047616118785
     dictD={}
     df = pd.read_excel(file_path)
-    print("读取excel")
     for row in range(0,df.shape[0]):
         for col in range(2,5,2):
             dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
@@ -33,7 +32,6 @@ def readexcel(file_path):
             else:
                 #编码:[name,idx]
                 dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]
-    print('excel 读取完毕')
     forsort=sorted(dictD.items(),key=lambda x:x[0])
     dic=dict(forsort)
     for i in dic.keys():      
@@ -49,7 +47,7 @@ def readexcel(file_path):
             'pid':pid
             }
         data.append(result)
-    print('已生成sql关键词')
+    print('读取完成')
     return data       
 
 #读取excel文件，生成同名的sql文件
@@ -78,6 +76,6 @@ if __name__ == '__main__':
         for file in files:
             if file.endswith('.xlsx'):
                 xlxs_path=os.path.join(root,file)
-                print('正在处理文件：'+xlxs_path)
+                print('正在读取excel文件：'+xlxs_path)
                 createsql(root,file)
-    print('处理完成')
+    print('全部生成完成')
