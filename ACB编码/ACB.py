@@ -20,7 +20,7 @@ def createslq(idx,pid,name,code):
 
 def readexcel(file_path):
     data=list()
-    #产品分类	A01	ACB	A01A03	CW3	A01A03A01
+    #产品分类	A01	 测试平台1764891047616118785
     dictD={}
     df = pd.read_excel(file_path)
     print("读取excel")
@@ -34,16 +34,18 @@ def readexcel(file_path):
                 #编码:[name,idx]
                 dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]
     print('excel 读取完毕')
-    for i in dictD.keys():      
+    forsort=sorted(dictD.items(),key=lambda x:x[0])
+    dic=dict(forsort)
+    for i in dic.keys():      
         if len(i)>6:
-            pid=dictD.get(i[0:-3])[1]
+            pid=dic.get(i[0:-3])[1]
         elif len(i)==6:
             pid='1764891047616118785'
-            #pid='1772098148731260929' #产品分类id 网页获取,测试平台1764891047616118785
+            #pid='1772098148731260929' #产品分类id 
         result={
             'code': i,
-            'name':dictD[i][0],
-            'idx':dictD[i][1],
+            'name':dic[i][0],
+            'idx':dic[i][1],
             'pid':pid
             }
         data.append(result)
@@ -71,7 +73,6 @@ def createsql(root,file):
 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
-    #遍历data目录下xlsx文件
     xlxs_path=os.path.join(abspath,'data')
     for root, dirs, files in os.walk(xlxs_path):
         for file in files:
