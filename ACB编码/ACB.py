@@ -10,7 +10,7 @@ def IDcreator():
   
 def createslq(idx,pid,name,code):
     clild='0'
-    if len(code) ==27:
+    if len(code) == 27:
         clild='0'
     else:
         clild='1'
@@ -21,16 +21,16 @@ def createslq(idx,pid,name,code):
 def readexcel(file_path):
     data=list()
     dictD={}
-    df = pd.read_excel(file_path)
+    df = pd.read_excel(file_path,dtype=object) #pandas 读取excel,整数变小数的问题bug 使用dtype=object解决
     for row in range(0,df.shape[0]):
         #提取excel 3，4，5，6列，code：4，6，name：3，5
         for col in range(2,5,2):
             dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
         for col in range(6,df.shape[1],3):
             if str(df.iloc[row,col])=='nan':
-                break
+                pass
             else:
-                #编码:[name,idx]
+                # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
                 dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]
     forsort=sorted(dictD.items(),key=lambda x:x[0])
     dic=dict(forsort)
@@ -58,8 +58,10 @@ def createsql(root,file):
         os.makedirs(os.path.dirname(sqlfile_path))
     try:
         with open(sqlfile_path, 'w') as f:
+            j=0
             for i in ldata:
-                f.write('--'+i['name']+'\t'+i['code']+'\n')
+                j=j+1
+                f.write('--'+str(j)+'\t'+i['code']+'\t'+i['name']+'\n')
                 f.write(createslq(i['idx'],i['pid'],i['name'],i['code'])+'\n')
                 f.write('\n')
     except Exception as e:
