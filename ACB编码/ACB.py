@@ -53,7 +53,8 @@ def readexcel(file_path):
 def createsql(root,file):
     xlxs_path=os.path.join(root,file)
     ldata=readexcel(xlxs_path)
-    sqlfile_path = os.path.join(root, file[0:-5]+'.sql')
+    temp_path=os.path.join(root,'sql')
+    sqlfile_path = os.path.join(temp_path, file[0:-5]+'.sql')
     if not os.path.exists(os.path.dirname(sqlfile_path)):
         os.makedirs(os.path.dirname(sqlfile_path))
     try:
