@@ -60,8 +60,12 @@ def createsql(root,file):
     res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
     n=0
     for i ,data in enumerate(res):
+        if len(data)<=10000:
+            filename=sqlfile_path
+        else:
+            filename=f'{sqlfile_path[0:-4]}_{i}'+'.sql'
         try:
-            with open(f'{sqlfile_path[0:-4]}_{i}'+'.sql', 'w',encoding='utf-8') as f:
+            with open(filename, 'w',encoding='utf-8') as f:
                 for j in data:
                     n=n+1
                     f.write('--'+str(n)+'\t'+j['code']+'\t'+j['name']+'\n')
@@ -71,10 +75,7 @@ def createsql(root,file):
             print(f'Error occurred while writing to file: {e}')
         finally:
             f.close()
-            if len(data)<=10000:
-                print(f'{sqlfile_path[0:-4]}_{i}'+'.sql'+' 写入完成')
-            else:
-                print(f'{sqlfile_path[0:-4]}_{i}'+'.sql'+' 写入完成')
+            print(f'{filename} \t写入完成')
                 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
