@@ -60,7 +60,7 @@ def createsql(root,file):
     res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
     n=0
     for i ,data in enumerate(res):
-        if len(data)<=10000:
+        if len(res)<2:
             filename=sqlfile_path
         else:
             filename=f'{sqlfile_path[0:-4]}_{i}'+'.sql'
