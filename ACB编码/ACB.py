@@ -71,23 +71,22 @@ def createsql(root,file):
         print(f'Error occurred while writing to file: {e}')
     finally:
         f.close()
-        lines_per_file = 30000
         with open(sqlfile_path,encoding='utf-8') as f:
-            # 使用切片操作分割文件
             file_data = f.readlines()
-            f.close()
-            if len(file_data) <= lines_per_file:
-                pass
-            else:
-                split_data = [file_data[i:i+lines_per_file] for i in range(0, len(file_data), lines_per_file)]
-                # 写入分割后的文件
-                for i, data in enumerate(split_data):
-                    with open(f'{sqlfile_path[0:-4]}_{i}'+'.sql', 'w',encoding='utf-8')as f1:
-                        f1.writelines(data)
+        f.close()
+        lines_per_file = 30000
+        if len(file_data) <= lines_per_file:
+            print(sqlfile_path+' 写入完成')
+        else:
+            split_data = [file_data[i:i+lines_per_file] for i in range(0, len(file_data), lines_per_file)]
+            # 写入分割后的文件
+            for i, data in enumerate(split_data):
+                with open(f'{sqlfile_path[0:-4]}_{i}'+'.sql', 'w',encoding='utf-8')as f1:
+                    f1.writelines(data)
                 f1.close()
-                os.remove(sqlfile_path)
-    print(sqlfile_path+' 写入完成')
-
+                print(f'{sqlfile_path[0:-4]}_{i}'+'.sql'+' 写入完成')
+            os.remove(sqlfile_path)
+                
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
     xlxs_path=os.path.join(abspath,'data')
