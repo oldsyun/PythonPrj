@@ -57,35 +57,24 @@ def createsql(root,file):
     ldata=readexcel(xlxs_path)
     temp_path=os.path.join(root,'sql')
     sqlfile_path = os.path.join(temp_path, file[0:-5]+'.sql')
-    if not os.path.exists(os.path.dirname(sqlfile_path)):
-        os.makedirs(os.path.dirname(sqlfile_path))
-    try:
-        with open(sqlfile_path, 'w',encoding='utf-8') as f:
-            j=0
-            for i in ldata:
-                j=j+1
-                f.write('--'+str(j)+'\t'+i['code']+'\t'+i['name']+'\n')
-                f.write(createslq(i['idx'],i['pid'],i['name'],i['code'])+'\n')
-                f.write('\n')
-    except Exception as e:
-        print(f'Error occurred while writing to file: {e}')
-    finally:
-        f.close()
-        with open(sqlfile_path,encoding='utf-8') as f:
-            file_data = f.readlines()
-        f.close()
-        lines_per_file = 30000
-        if len(file_data) <= lines_per_file:
-            print(sqlfile_path+' 写入完成')
-        else:
-            split_data = [file_data[i:i+lines_per_file] for i in range(0, len(file_data), lines_per_file)]
-            # 写入分割后的文件
-            for i, data in enumerate(split_data):
-                with open(f'{sqlfile_path[0:-4]}_{i}'+'.sql', 'w',encoding='utf-8')as f1:
-                    f1.writelines(data)
-                f1.close()
+    res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
+    n=0
+    for i ,data in enumerate(res):
+        try:
+            with open(f'{sqlfile_path[0:-4]}_{i}'+'.sql', 'w',encoding='utf-8') as f:
+                for j in data:
+                    n=n+1
+                    f.write('--'+str(n)+'\t'+j['code']+'\t'+j['name']+'\n')
+                    f.write(createslq(j['idx'],j['pid'],j['name'],j['code'])+'\n')
+                    f.write('\n')
+        except Exception as e:
+            print(f'Error occurred while writing to file: {e}')
+        finally:
+            f.close()
+            if len(data)<=10000:
                 print(f'{sqlfile_path[0:-4]}_{i}'+'.sql'+' 写入完成')
-            os.remove(sqlfile_path)
+            else:
+                print(f'{sqlfile_path[0:-4]}_{i}'+'.sql'+' 写入完成')
                 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
