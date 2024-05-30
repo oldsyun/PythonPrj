@@ -76,6 +76,7 @@ def createsql(root,file):
         finally:
             f.close()
             print(f'{filename} \t写入完成')
+    print(xlxs_path+'共生成%d个编码'%n)
                 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
