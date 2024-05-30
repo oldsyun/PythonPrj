@@ -1,11 +1,13 @@
+#生成的sql文件使用utf8字符集
+
 from datetime import datetime
 import pandas as pd
 import os,random
 
 def IDcreator():
     timestamp = datetime.now().timestamp()
-    timestramp = str(int(timestamp))
-    idx=timestramp[:2]+str(random.randint(0,9))+timestramp[2:]+str(random.randint(0,99999999))
+    timestramp = str(timestamp)
+    idx=timestramp[:2]+str(random.randint(0,9))+timestramp[2:10]+timestramp[11:]+str(random.randint(0,99))
     return idx
   
 def createslq(idx,pid,name,code):
@@ -58,7 +60,7 @@ def createsql(root,file):
     if not os.path.exists(os.path.dirname(sqlfile_path)):
         os.makedirs(os.path.dirname(sqlfile_path))
     try:
-        with open(sqlfile_path, 'w') as f:
+        with open(sqlfile_path, 'w',encoding='utf-8') as f:
             j=0
             for i in ldata:
                 j=j+1
@@ -69,6 +71,21 @@ def createsql(root,file):
         print(f'Error occurred while writing to file: {e}')
     finally:
         f.close()
+        lines_per_file = 30000
+        with open(sqlfile_path,encoding='utf-8') as f:
+            # 使用切片操作分割文件
+            file_data = f.readlines()
+            f.close()
+            if len(file_data) <= lines_per_file:
+                pass
+            else:
+                split_data = [file_data[i:i+lines_per_file] for i in range(0, len(file_data), lines_per_file)]
+                # 写入分割后的文件
+                for i, data in enumerate(split_data):
+                    with open(f'{sqlfile_path[0:-4]}_{i}'+'.sql', 'w',encoding='utf-8')as f1:
+                        f1.writelines(data)
+                f1.close()
+                os.remove(sqlfile_path)
     print(sqlfile_path+' 写入完成')
 
 if __name__ == '__main__':
