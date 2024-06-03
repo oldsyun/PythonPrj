@@ -92,11 +92,15 @@ def createsql(root,file):
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
     xlxs_path=os.path.join(abspath,'data')
- 
-    for root, dirs, files in os.walk(xlxs_path):
-        for file in files:
-            if file.endswith('.xlsx'):
-                xlxs_path=os.path.join(root,file)
-                print('正在读取excel文件：'+xlxs_path)
-                createsql(root,file)
-    print('全部生成完成')
+    #判断xlxs_path是否存在
+    if not os.path.exists(xlxs_path):
+        print ('文件夹不存在')
+        exit()
+    else:
+        for root, dirs, files in os.walk(xlxs_path):
+            for file in files:
+                if file.endswith('.xlsx'):
+                    xlxs_path=os.path.join(root,file)
+                    print('正在读取excel文件：'+xlxs_path)
+                    createsql(root,file)
+        print('全部生成完成')
