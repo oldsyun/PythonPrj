@@ -86,13 +86,20 @@ if __name__ == '__main__':
     xlxs_path=os.path.join(abspath,'data')
     #判断xlxs_path是否存在
     if not os.path.exists(xlxs_path):
-        print ('文件夹不存在')
+        print ('文件夹不存在，并放入excel文件')
         exit()
     else:
         for root, dirs, files in os.walk(xlxs_path):
-            for file in files:
-                if file.endswith('.xlsx'):
-                    xlxs_path=os.path.join(root,file)
-                    print('正在读取excel文件：'+xlxs_path)
-                    createsql(root,file)
-        print('全部生成完成')
+            #文件夹内是否为空
+            if not files:
+                print('文件夹内为空')
+                exit()
+            else:
+                #判断文件夹内是否存在excel文件
+                for file in files:
+                    if file.endswith('.xlsx'):
+                        xlxs_path=os.path.join(root,file)
+                        print('正在读取excel文件：'+xlxs_path)
+                        createsql(root,file)
+                    else:
+                        print('请放入excel文件')
