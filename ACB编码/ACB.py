@@ -1,4 +1,4 @@
-#生成的sql文件使用utf8字符集
+# -*- coding: utf-8 -*-
 
 from datetime import datetime
 import pandas as pd
