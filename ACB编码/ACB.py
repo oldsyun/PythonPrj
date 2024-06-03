@@ -56,6 +56,9 @@ def createsql(root,file):
     xlxs_path=os.path.join(root,file)
     ldata=readexcel(xlxs_path)
     temp_path=os.path.join(root,'sql')
+    #判断temp_path是否存在，没有则创建
+    if not os.path.exists(temp_path):
+        os.makedirs(temp_path)
     sqlfile_path = os.path.join(temp_path, file[0:-5]+'.sql')
     res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
     n=0
@@ -65,7 +68,15 @@ def createsql(root,file):
         else:
             filename=f'{sqlfile_path[0:-4]}_{i}'+'.sql'
         try:
-            with open(filename, 'w',encoding='utf-8') as f:
+            file=os.path.join(temp_path, filename)
+            #判断file是否存在，没有则创建
+            if not os.path.exists(file):
+                os.makedirs(file)
+            #写入文件
+            with open(file, 'w',encoding='utf-8') as f:
+                for j in data:
+                    n=n+1
+            with open(file, 'w',encoding='utf-8') as f:
                 for j in data:
                     n=n+1
                     f.write('--'+str(n)+'\t'+j['code']+'\t'+j['name']+'\n')
@@ -75,12 +86,13 @@ def createsql(root,file):
             print(f'Error occurred while writing to file: {e}')
         finally:
             f.close()
-            print(f'{filename} \t写入完成')
-    print(xlxs_path+'共生成%d个编码'%n)
+            print(f'{file} \t写入完成')
+    print(xlxs_path+'\t   共生成%d个编码'%n)
                 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
     xlxs_path=os.path.join(abspath,'data')
+ 
     for root, dirs, files in os.walk(xlxs_path):
         for file in files:
             if file.endswith('.xlsx'):
