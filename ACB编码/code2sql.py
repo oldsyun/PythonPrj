@@ -54,7 +54,7 @@ def readexcel(file_path):
 def createsql(root,file):
     xlxs_path=os.path.join(root,file)
     ldata=readexcel(xlxs_path)
-    temp_path=os.path.join(root,'sql')
+    temp_path=os.path.join(root,ldata[0]['name'])
     #判断temp_path是否存在，没有则创建
     if not os.path.exists(temp_path):
         os.makedirs(temp_path)
@@ -79,6 +79,7 @@ def createsql(root,file):
         finally:
             f.close()
             print(f'{filename} \t写入完成')
+
     print(xlxs_path+'\t     共生成%d个编码'%n)
                 
 if __name__ == '__main__':
@@ -101,5 +102,3 @@ if __name__ == '__main__':
                         xlxs_path=os.path.join(root,file)
                         print('正在读取excel文件：'+xlxs_path)
                         createsql(root,file)
-                    else:
-                        print('请放入excel文件')
