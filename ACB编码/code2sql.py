@@ -93,7 +93,6 @@ if __name__ == '__main__':
         for root, dirs, files in os.walk(xlxs_path):
             #文件夹内是否为空
             if not files:
-                print('文件夹内为空')
                 exit()
             else:
                 #判断文件夹内是否存在excel文件
