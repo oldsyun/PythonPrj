@@ -61,27 +61,27 @@ def createsql(root,file):
     #判断temp_path是否存在，没有则创建
     if not os.path.exists(temp_path):
         os.makedirs(temp_path)
-    sqlfile_path = os.path.join(temp_path, file[0:-5]+'.sql')
-    res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
+    filename = os.path.join(temp_path, file[0:-5]+'.sql')
+    #res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
     n=0
-    for i ,data in enumerate(res):
-        if len(res)<2:
-            filename=sqlfile_path
-        else:
-            filename=f'{sqlfile_path[0:-4]}_{i}'+'.sql'
-        try:
+    #for i ,data in enumerate(res):
+        #if len(res)<2:
+            #filename=sqlfile_path
+        #else:
+        #    filename=f'{sqlfile_path[0:-4]}_{i}'+'.sql'
+    try:
             #写入文件
-            with open(filename, 'w',encoding='utf-8') as f:
-                for j in data:
-                    n=n+1
-                    f.write('--'+str(n)+'\t'+j['code']+'\t'+j['name']+'\n')
-                    f.write(createslq(j['idx'],j['pid'],j['name'],j['code'])+'\n')
-                    f.write('\n')
-        except Exception as e:
-            print(f'Error occurred while writing to file: {e}')
-        finally:
-            f.close()
-            print(f'{filename} \t写入完成')
+        with open(filename, 'w',encoding='utf-8') as f:
+            for j in ldata:
+                n=n+1
+                f.write('--'+str(n)+'\t'+j['code']+'\t'+j['name']+'\n')
+                f.write(createslq(j['idx'],j['pid'],j['name'],j['code'])+'\n')
+                f.write('\n')
+    except Exception as e:
+        print(f'Error occurred while writing to file: {e}')
+    finally:
+        f.close()
+        print(f'{filename} \t写入完成')
 
     print(xlxs_path+'\t     共生成%d个编码'%n)
                 
