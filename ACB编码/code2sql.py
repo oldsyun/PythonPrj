@@ -2,12 +2,13 @@
 
 from datetime import datetime
 import pandas as pd
-import os,random
+import os,random,time
 
 def IDcreator():
+    time.sleep(random.randint(0,9)/1000)
     timestamp = datetime.now().timestamp()
     timestramp = str(timestamp)
-    idx=timestramp[:2]+str(random.randint(0,9))+timestramp[2:10]+timestramp[11:]+str(random.randint(0,99))
+    idx=timestramp[:1]+str(random.randint(0,9))+str(random.randint(0,9))+timestramp[2:5]+str(random.randint(0,9))+timestramp[7:10]+str(random.randint(0,9))+timestramp[11:]+str(random.randint(0,9))
     return idx
   
 def createslq(idx,pid,name,code):
@@ -40,7 +41,9 @@ def readexcel(file_path):
         if len(i)>6:
             pid=dic.get(i[0:-3])[1]
         elif len(i)==6:
-            pid='1764891047616118785'#pid='1772098148731260929' 查看在线网页id号，区分测试环境和生产环境  产品分类	A01	 测试平台1764891047616118785
+            pid='1764891047616118785'
+            #pid='1772098148731260929' 
+            # 查看在线网页id号，区分测试环境和生产环境  产品分类	A01	 测试平台1764891047616118785
         result={
             'code': i,
             'name':dic[i][0],
