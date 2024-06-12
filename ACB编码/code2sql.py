@@ -5,7 +5,7 @@ import pandas as pd
 import os,random,time
 
 def IDcreator():
-    time.sleep(random.randint(0,9)/1000)
+    time.sleep(random.randint(1,9)/10000)
     timestamp = datetime.now().timestamp()
     timestramp = str(timestamp)
     idx=timestramp[:1]+str(random.randint(0,9))+str(random.randint(0,9))+timestramp[2:5]+str(random.randint(0,9))+timestramp[7:10]+str(random.randint(0,9))+timestramp[11:]+str(random.randint(0,9))
@@ -30,7 +30,7 @@ def readexcel(file_path):
         for col in range(2,5,2):
             dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
         for col in range(6,df.shape[1],3):
-            if str(df.iloc[row,col])=='nan':
+            if str(df.iloc[row,col])=='nan' or str(df.iloc[row,col+2])=='nan':
                 pass
             else:
                 # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
