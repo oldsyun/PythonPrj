@@ -3,6 +3,7 @@
 from datetime import datetime
 import pandas as pd
 import os,random,time
+dictD={}
 
 def IDcreator():
     time.sleep(random.randint(1,9)/10000)
@@ -23,18 +24,29 @@ def createslq(idx,pid,name,code):
 
 def readexcel(file_path):
     data=list()
-    dictD={}
     df = pd.read_excel(file_path,dtype=object) #pandas 读取excel,整数变小数的问题bug 使用dtype=object解决
     for row in range(0,df.shape[0]):
         #提取excel 3，4，5，6列，code：4，6，name：3，5
         for col in range(2,5,2):
-            dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
+            if str(df.iloc[row,col+1]) in dictD.keys():
+                pass
+            else:
+                # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
+                dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
+            #dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
         for col in range(6,df.shape[1],3):
             if str(df.iloc[row,col])=='nan' or str(df.iloc[row,col+2])=='nan':
                 pass
             else:
                 # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
-                dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]
+                if str(df.iloc[row,col+2]) in dictD.keys():
+                    if len(str(df.iloc[row,col+2]))==27:
+                        print ('重复编码：',str(df.iloc[row,col+2]))
+                    pass
+                else:
+                    # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
+                    dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]      
+                #dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]
     forsort=sorted(dictD.items(),key=lambda x:x[0])
     dic=dict(forsort)
     for i in dic.keys():      
@@ -82,7 +94,6 @@ def createsql(root,file):
     finally:
         f.close()
         print(f'{filename} \t写入完成')
-
     print(xlxs_path+'\t     共生成%d个编码'%n)
                 
 if __name__ == '__main__':
