@@ -66,14 +66,14 @@ def readexcel(file_path):
     print('读取完成')
     return data       
 
-def createsql(root,file):
-    xlxs_path=os.path.join(root,file)
-    ldata=readexcel(xlxs_path)
-    temp_path=os.path.join(root,ldata[0]['name'])
+def createsql(root,data):
+    #xlxs_path=os.path.join(root,file)
+    #ldata=readexcel(xlxs_path)
+    #temp_path=os.path.join(root,ldata[0]['name'])
     #判断temp_path是否存在，没有则创建
-    if not os.path.exists(temp_path):
-        os.makedirs(temp_path)
-    filename = os.path.join(temp_path, file[0:-5]+'.sql')
+    #if not os.path.exists(temp_path):
+    #    os.makedirs(temp_path)
+    filename = os.path.join(root, 'db.sql')
     #res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
     n=0
     #for i ,data in enumerate(res):
@@ -84,7 +84,7 @@ def createsql(root,file):
     try:
             #写入文件
         with open(filename, 'w',encoding='utf-8') as f:
-            for j in ldata:
+            for j in data:
                 n=n+1
                 f.write('--'+str(n)+'\t'+j['code']+'\t'+j['name']+'\n')
                 f.write(createslq(j['idx'],j['pid'],j['name'],j['code'])+'\n')
@@ -105,6 +105,7 @@ if __name__ == '__main__':
         exit()
     else:
         for root, dirs, files in os.walk(xlxs_path):
+            print ("here")
             #文件夹内是否为空
             if not files:
                 exit()
@@ -114,4 +115,5 @@ if __name__ == '__main__':
                     if file.endswith('.xlsx'):
                         xlxs_path=os.path.join(root,file)
                         print('正在读取excel文件：'+xlxs_path)
-                        createsql(root,file)
+                        ldata=readexcel(xlxs_path)
+                createsql(abspath,ldata)
