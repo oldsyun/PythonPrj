@@ -3,7 +3,7 @@
 from datetime import datetime
 import pandas as pd
 import os,random,time
-dictD={}
+
 
 def IDcreator():
     time.sleep(random.randint(1,9)/10000)
@@ -22,8 +22,7 @@ def createslq(idx,pid,name,code):
     sqlstr='INSERT INTO [dbo].[sys_category]([id], [pid], [name], [code], [create_by], [create_time], [update_by], [update_time], [sys_org_code], [has_child]) VALUES(N\''+idx+'\', N\''+pid+'\', N\''+name+'\', N\''+code+'\', N\'admin\', N\''+updatatime+'\', NULL, NULL, N\'A01\',N\''+clild+'\')'
     return sqlstr
 
-def readexcel(file_path):
-    data=list()
+def readexcel(file_path,dictD):
     df = pd.read_excel(file_path,dtype=object) #pandas 读取excel,整数变小数的问题bug 使用dtype=object解决
     for row in range(0,df.shape[0]):
         #提取excel 3，4，5，6列，code：4，6，name：3，5
@@ -33,7 +32,6 @@ def readexcel(file_path):
             else:
                 # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
                 dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
-            #dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
         for col in range(6,df.shape[1],3):
             if str(df.iloc[row,col])=='nan' or str(df.iloc[row,col+2])=='nan':
                 pass
@@ -46,25 +44,8 @@ def readexcel(file_path):
                 else:
                     # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
                     dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]      
-                #dictD[str(df.iloc[row,col+2])]=[str(df.iloc[row,col]),IDcreator()]
-    forsort=sorted(dictD.items(),key=lambda x:x[0])
-    dic=dict(forsort)
-    for i in dic.keys():      
-        if len(i)>6:
-            pid=dic.get(i[0:-3])[1]
-        elif len(i)==6:
-            pid='1764891047616118785'
-            #pid='1772098148731260929' 
-            # 查看在线网页id号，区分测试环境和生产环境  产品分类	A01	 测试平台1764891047616118785
-        result={
-            'code': i,
-            'name':dic[i][0],
-            'idx':dic[i][1],
-            'pid':pid
-            }
-        data.append(result)
     print('读取完成')
-    return data       
+
 
 def createsql(root,data):
     #xlxs_path=os.path.join(root,file)
@@ -94,7 +75,7 @@ def createsql(root,data):
     finally:
         f.close()
         print(f'{filename} \t写入完成')
-    print(xlxs_path+'\t     共生成%d个编码'%n)
+    print(filename+'\t共生成%d个编码字典'%n)
                 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
@@ -104,16 +85,37 @@ if __name__ == '__main__':
         print ('文件夹不存在，并放入excel文件')
         exit()
     else:
+        dictD={}
         for root, dirs, files in os.walk(xlxs_path):
-            print ("here")
             #文件夹内是否为空
             if not files:
                 exit()
             else:
-                #判断文件夹内是否存在excel文件
                 for file in files:
                     if file.endswith('.xlsx'):
                         xlxs_path=os.path.join(root,file)
                         print('正在读取excel文件：'+xlxs_path)
-                        ldata=readexcel(xlxs_path)
-                createsql(abspath,ldata)
+                        readexcel(xlxs_path,dictD)
+        if len(dictD)==0:
+            print('文件夹不存在编码，请检查')
+            exit()
+        else:
+            print('开始生成sql文件')
+            data=list()
+            forsort=sorted(dictD.items(),key=lambda x:x[0])
+            dic=dict(forsort)
+            for i in dic.keys():      
+                if len(i)>6:
+                    pid=dic.get(i[0:-3])[1]
+                elif len(i)==6:
+                    pid='1764891047616118785'
+                    #pid='1772098148731260929' 
+                    # 查看在线网页id号，区分测试环境和生产环境  产品分类	A01	 测试平台1764891047616118785
+                result={
+                    'code': i,
+                    'name':dic[i][0],
+                    'idx':dic[i][1],
+                    'pid':pid
+                    }
+                data.append(result)
+            createsql(abspath,data)
