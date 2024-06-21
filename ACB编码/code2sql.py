@@ -119,3 +119,4 @@ if __name__ == '__main__':
                     }
                 data.append(result)
             createsql(abspath,data)
+            print ('db文件已经生成')
