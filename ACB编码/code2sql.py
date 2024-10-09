@@ -31,7 +31,9 @@ def readexcel(file_path,dictD):
                 pass
             else:
                 # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
-                dictD[str(df.iloc[row,col+1])]=[str(df.iloc[row,col]),IDcreator()]
+                name=str(df.iloc[row,col])
+                code=str(df.iloc[row,col+1])
+                dictD[code]=[name,IDcreator()]
         for col in range(6,df.shape[1],3):
             if str(df.iloc[row,col])=='nan' or str(df.iloc[row,col+2])=='nan':
                 pass
@@ -106,7 +108,8 @@ if __name__ == '__main__':
             dic=dict(forsort)
             for i in dic.keys():      
                 if len(i)>6:
-                    pid=dic.get(i[0:-3])[1]
+                    if dic.get(i[0:-3]) is not None:
+                        pid=dic.get(i[0:-3])[1]
                 elif len(i)==6:
                     pid='1764891047616118785'
                     #pid='1772098148731260929' 
