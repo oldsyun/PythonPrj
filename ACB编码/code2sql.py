@@ -27,7 +27,9 @@ def readexcel(file_path,dictD):
     for row in range(0,df.shape[0]):
         #提取excel 3，4，5，6列，code：4，6，name：3，5
         for col in range(2,5,2):
-            if str(df.iloc[row,col+1]) in dictD.keys():
+            if str(df.iloc[row,col])=='nan' or str(df.iloc[row,col+1])=='nan':
+                pass
+            elif str(df.iloc[row,col+1]) in dictD.keys():
                 pass
             else:
                 # code:[name,idx] 'A01A03':['ACB','1781686738534387433']
@@ -50,20 +52,8 @@ def readexcel(file_path,dictD):
 
 
 def createsql(root,data):
-    #xlxs_path=os.path.join(root,file)
-    #ldata=readexcel(xlxs_path)
-    #temp_path=os.path.join(root,ldata[0]['name'])
-    #判断temp_path是否存在，没有则创建
-    #if not os.path.exists(temp_path):
-    #    os.makedirs(temp_path)
     filename = os.path.join(root, 'db.sql')
-    #res=[ldata[i:i+10000] for i in range(0, len(ldata), 10000)]
     n=0
-    #for i ,data in enumerate(res):
-        #if len(res)<2:
-            #filename=sqlfile_path
-        #else:
-        #    filename=f'{sqlfile_path[0:-4]}_{i}'+'.sql'
     try:
             #写入文件
         with open(filename, 'w',encoding='utf-8') as f:
